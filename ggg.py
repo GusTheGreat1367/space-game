@@ -1,5 +1,11 @@
 import pygame
 import random
+from tkinter import *
+root = Tk()
+Button(root, text="start", command=root.destroy).pack() #button to close the window
+root.mainloop()
+
+
 
 # Initialize pygame
 pygame.init()
@@ -17,14 +23,16 @@ try:
 except pygame.error:
     BG = pygame.Surface((WIDTH, HEIGHT))
     BG.fill((0, 0, 0))
-
+clock = pygame.time.Clock()
 def main():
     population = 1000000  # Initial population
     money = 0
     last_money_increment = pygame.time.get_ticks()
     increment_interval = 5000  # milliseconds
     run = True
-
+    print (population)
+    print (money)
+    print (clock)
     # Choose a random economy type
     economy = random.choice(['Travel', 'Tourism', 'Government'])
 
