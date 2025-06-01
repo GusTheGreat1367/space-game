@@ -1,1 +1,1 @@
-a game where you conquer the world, one planet at a time.
+a game where you conquer the galaxy, one planet at a time.
