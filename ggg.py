@@ -1,5 +1,6 @@
 import pygame
 import random
+import pyautogui
 from tkinter import *
 root = Tk()
 Button(root, text="start", command=root.destroy).pack() #button to close the window
@@ -9,6 +10,9 @@ root.mainloop()
 
 # Initialize pygame
 pygame.init()
+
+money = 0
+population = 1000000
 
 display = WIDTH, HEIGHT = 1000, 800
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -23,26 +27,44 @@ try:
 except pygame.error:
     BG = pygame.Surface((WIDTH, HEIGHT))
     BG.fill((0, 0, 0))
+
+player = pygame.draw.circle(WIN, (255, 0, 0), player_pos, player_radius)
+
 clock = pygame.time.Clock()
+if pyautogui.click and pyautogui.position() == player:
+    print('hi')
+if clock == 60000:
+    print('Explore the galaxy?')
+    root1 = Tk()
+    root1.title("Explore?")
+    root1.geometry("300x100")
+    def y():
+        root1.destroy()
+        money -= 10000
+    def n():
+        root1.destroy()
+        money += 10000
+    Button(root1, text="Yes", command=y).pack(side='left', padx=20)
+    Button(root1, text="No", command=n).pack(side='right', padx=20)
+
 def main():
-    population = 1000000  # Initial population
-    money = 0
+    
     last_money_increment = pygame.time.get_ticks()
     increment_interval = 5000  # milliseconds
     run = True
-    print (population)
-    print (money)
-    print (clock)
+    
     # Choose a random economy type
-    economy = random.choice(['Travel', 'Tourism', 'Government'])
+    
 
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
+        print (population)
+        print (money)
+        print (clock)
         WIN.blit(BG, (0, 0))
-        pygame.draw.circle(WIN, (255, 0, 0), player_pos, player_radius)
+        player = pygame.draw.circle(WIN, (255, 0, 0), player_pos, player_radius)
 
         current_time = pygame.time.get_ticks()
         if current_time - last_money_increment >= increment_interval:
@@ -52,7 +74,7 @@ def main():
 
         # Display economy and money (simple text)
         font = pygame.font.SysFont(None, 36)
-        text = font.render(f"Economy: {economy}  Money: {money}", True, (255, 255, 255))
+        text = font.render("timesnewroman", True, (255, 255, 255))
         WIN.blit(text, (20, 20))
 
         pygame.display.update()
