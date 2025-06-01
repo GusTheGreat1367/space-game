@@ -2,6 +2,7 @@ import pygame
 import random
 import pyautogui
 from tkinter import *
+from tkinter import simpledialog  # <-- Add this import
 
 # --- Tkinter intro window ---
 def start_game():
@@ -26,6 +27,10 @@ pygame.display.set_caption("CONQUER THE GALAXY")
 player_pos = [WIDTH // 2, HEIGHT // 2]
 player_radius = 100
 
+# Initial planet state
+planet_color = (255, 0, 0)
+planet_name = "Home"
+
 # Load background image with fallback
 try:
     BG = pygame.transform.scale(pygame.image.load("bg.jpeg"), (WIDTH, HEIGHT))
@@ -41,14 +46,25 @@ money += 10000
 
 # --- Explore popup using tkinter ---
 def explore_prompt():
+    global money, planet_color, planet_name
     prompt = Toplevel()  # Use Toplevel instead of Tk for additional windows
     prompt.title("Explore the galaxy?")
-    prompt.geometry("300x100")
+    prompt.geometry("300x120")
 
     def on_yes():
-        global money
+        global money, planet_color, planet_name
         money -= 10000
         prompt.destroy()
+        # Ask for planet name
+        name = simpledialog.askstring("Planet Name", "Name your new planet:", parent=prompt)
+        if name:
+            planet_name = name
+        # Change planet color randomly
+        planet_color = (
+            random.randint(50, 255),
+            random.randint(50, 255),
+            random.randint(50, 255)
+        )
 
     def on_no():
         global money
@@ -65,8 +81,9 @@ def explore_prompt():
 
 # --- Game Loop ---
 def main():
-    global money, population
+    global money, population, planet_color, planet_name
 
+    font = pygame.font.SysFont(None, 36)
     clock = pygame.time.Clock()
     last_money_increment = pygame.time.get_ticks()
     increment_interval = 5000  # every 5 seconds
@@ -85,11 +102,15 @@ def main():
                     pyautogui.alert(
                         text=f"Money: {money}\nPopulation: {population}\nTime: {pygame.time.get_ticks() // 1000}s",
                         title="Player Info"
-                    )
+                    ) 
 
         # Draw background and player
         WIN.blit(BG, (0, 0))
-        pygame.draw.circle(WIN, (255, 0, 0), player_pos, player_radius)
+        pygame.draw.circle(WIN, planet_color, player_pos, player_radius)
+        # Draw planet name
+        name_text = font.render(planet_name, True, (255, 255, 255))
+        text_rect = name_text.get_rect(center=(player_pos[0], player_pos[1] + player_radius + 30))
+        WIN.blit(name_text, text_rect)
 
         # Economy-based income
         current_time = pygame.time.get_ticks()
